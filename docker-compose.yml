@@ -1,0 +1,36 @@
+services:
+  db:
+    image: timescale/timescaledb:latest-pg16
+    container_name: nebula9-db
+    environment:
+      POSTGRES_USER: nebula9
+      POSTGRES_PASSWORD: nebula9_dev
+      POSTGRES_DB: nebula9_finance
+    ports:
+      - "5432:5432"
+    volumes:
+      - nebula9_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nebula9 -d nebula9_finance"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: nebula9-app
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgresql://nebula9:nebula9_dev@db:5432/nebula9_finance
+      JWT_SECRET: docker-dev-change-me-use-long-random-secret
+      CLIENT_ORIGIN: http://localhost:4000
+      OAUTH_CALLBACK_BASE: http://localhost:4000
+      SERVE_STATIC: "1"
+      CLIENT_DIST: /app/static
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  nebula9_pgdata:
