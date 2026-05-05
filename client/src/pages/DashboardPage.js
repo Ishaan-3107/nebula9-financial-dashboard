@@ -441,13 +441,20 @@ export function DashboardPage() {
                                   width: 40,
                                 }),
                                 _jsx(Tooltip, {
+                                  cursor: {
+                                    fill: "var(--text)",
+                                    opacity: 0.08,
+                                  },
                                   contentStyle: {
                                     background: "var(--chart-tooltip-bg)",
                                     border:
                                       "1px solid var(--chart-tooltip-border)",
                                   },
                                   labelStyle: {
-                                    color: "var(--chart-tooltip-label)",
+                                    color: "var(--text)",
+                                  },
+                                  itemStyle: {
+                                    color: "var(--text)",
                                   },
                                   formatter: (v) => [v.toFixed(4), "Δ close"],
                                 }),
@@ -840,6 +847,15 @@ export function DashboardPage() {
                                       background: "var(--chart-tooltip-bg)",
                                       border:
                                         "1px solid var(--chart-tooltip-border)",
+                                    },
+                                    labelStyle: {
+                                      color: "var(--text)",
+                                    },
+                                    itemStyle: {
+                                      color: "var(--text)",
+                                    },
+                                    wrapperStyle: {
+                                      color: "var(--text)",
                                     },
                                     formatter: (v, _name, props) => {
                                       try {
