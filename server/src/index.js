@@ -87,7 +87,7 @@ async function tickLoop() {
 }
 async function main() {
     await runSeedIfNeeded();
-    setInterval(tickLoop, 3000);
+    setInterval(tickLoop,3000);
     server.listen(config.port, () => {
         console.log(`API + WS on http://localhost:${config.port}`);
     });
