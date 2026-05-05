@@ -9,7 +9,7 @@ Educational hiring project: a **simulated** market stack with **React** charts, 
 | Layer | Choice |
 |--------|--------|
 | UI | Vite + React + Recharts |
-| API | Express 4, TypeScript, `ws` |
+| API | Express 4, JavaScript, `ws` |
 | Auth | JWT (`Authorization: Bearer`), optional Google/GitHub OAuth |
 | Relational + time-series | PostgreSQL **TimescaleDB** (`market_bars`, `market_ticks` hypertables) |
 | Real-time | Ingestion loop + WebSocket broadcast (`/ws`) |
