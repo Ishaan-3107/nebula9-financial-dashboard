@@ -12,14 +12,14 @@ function mockInsight(ctx) {
   const news = ctx.newsHeadlines.slice(0, 3).join("; ") || "No recent headlines in store.";
 
   return [
-    `**${ctx.symbol}** @ ${ctx.livePrice} (${DISCLAIMER})`,
+    `${ctx.symbol} @ ${ctx.livePrice} (${DISCLAIMER})`,
     ``,
-    `**Trend (simple linear fit):** short-horizon direction looks **${trend}**; next-step regression targets ~${steps.slice(0, 3).join(", ")}.`,
-    `**Volatility (log-returns):** ${risk} (σ ≈ ${(vol * 100).toFixed(2)}% per bar).`,
-    `**News context:** ${news}`,
-    ctx.portfolioLine ? `**Your portfolio:** ${ctx.portfolioLine}` : "",
+    `Trend (simple linear fit): short-horizon direction looks ${trend}; next-step regression targets ~${steps.slice(0, 3).join(", ")}.`,
+    `Volatility (log-returns): ${risk} (σ ≈ ${(vol * 100).toFixed(2)}% per bar).`,
+    `News context: ${news}`,
+    ctx.portfolioLine ? `Your portfolio: ${ctx.portfolioLine}` : "",
     ``,
-    `**Risk note:** Use position sizing and stops appropriate to your goals; this dashboard does not execute trades.`,
+    `Risk note: Use position sizing and stops appropriate to your goals; this dashboard does not execute trades.`,
   ]
     .filter(Boolean)
     .join("\n");
@@ -33,8 +33,8 @@ export async function answerNaturalLanguageQuery(question, ctx) {
   const base = mockInsight(ctx);
   return {
     text:
-      `**Q:** ${question}\n\n` +
-      `**A (offline grounded mode):** ${base}\n\n` +
+      `Q: ${question}\n\n` +
+      `A (offline grounded mode): ${base}\n\n` +
       `_This project is configured to run fully offline for AI responses._`,
     model: "mock-grounded",
   };

@@ -79,17 +79,26 @@ export function DashboardPage() {
     sym: "AAPL",
   });
 
-  const chartData = useMemo(
-    () =>
-      bars.map((b) => ({
-        t: new Date(b.bucket).toLocaleTimeString([], {
+  const chartData = useMemo(() => {
+    let data = bars.map((b) => ({
+      t: new Date(b.bucket).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      close: Number(b.close),
+    }));
+    const livePrice = live[symbol];
+    if (livePrice != null) {
+      data.push({
+        t: new Date().toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         }),
-        close: Number(b.close),
-      })),
-    [bars],
-  );
+        close: livePrice,
+      });
+    }
+    return data;
+  }, [bars, live, symbol]);
 
   const deltaBars = useMemo(() => {
     if (chartData.length < 2) return [];
