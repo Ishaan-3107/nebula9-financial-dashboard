@@ -47,7 +47,7 @@ export function LoginPage() {
             className: "muted",
             style: { marginTop: "-0.5rem" },
             children:
-              "Educational simulation \u2014 not a brokerage. JWT sessions; OAuth optional when configured server-side.",
+              "For educational simulation only.",
           }),
           err && _jsx("div", { className: "flash", children: err }),
           _jsxs("form", {
