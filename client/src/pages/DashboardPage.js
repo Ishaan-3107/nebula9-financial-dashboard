@@ -385,12 +385,6 @@ export function DashboardPage() {
                   }),
                 }),
               }),
-              _jsx("p", {
-                className: "muted",
-                style: { margin: "0.75rem 0 0", fontSize: "0.8rem" },
-                children:
-                  "Bars stored in TimescaleDB hypertable; ticks broadcast over WebSocket every ~3s (simulated or Finnhub).",
-              }),
             ],
           }),
 
@@ -695,7 +689,6 @@ export function DashboardPage() {
                             children: [
                               _jsx("th", { children: "Symbol" }),
                               _jsx("th", { children: "Qty" }),
-                              _jsx("th", { children: "Avg cost" }),
                               _jsx("th", { children: "Est. value" }),
                             ],
                           }),
@@ -703,8 +696,7 @@ export function DashboardPage() {
                         _jsx("tbody", {
                           children: positions.map((p) => {
                             const qty = Number(p.quantity);
-                            const cost = Number(p.avg_cost);
-                            const px = live[p.symbol] ?? cost;
+                            const px = live[p.symbol];
                             const val = qty * px;
                             return _jsxs(
                               "tr",
@@ -712,7 +704,6 @@ export function DashboardPage() {
                                 children: [
                                   _jsx("td", { children: p.symbol }),
                                   _jsx("td", { children: fmtNum(qty) }),
-                                  _jsx("td", { children: `$${fmtNum(cost)}` }),
                                   _jsx("td", {
                                     children: `$${val.toLocaleString(undefined, { maximumFractionDigits: 0 })}`,
                                   }),
@@ -766,21 +757,6 @@ export function DashboardPage() {
                                     setPosForm({
                                       ...posForm,
                                       quantity: e.target.value,
-                                    }),
-                                }),
-                              ],
-                            }),
-                            _jsxs("div", {
-                              style: { flex: 1 },
-                              children: [
-                                _jsx("label", { children: "Avg cost" }),
-                                _jsx("input", {
-                                  className: "input",
-                                  value: posForm.avg_cost,
-                                  onChange: (e) =>
-                                    setPosForm({
-                                      ...posForm,
-                                      avg_cost: e.target.value,
                                     }),
                                 }),
                               ],

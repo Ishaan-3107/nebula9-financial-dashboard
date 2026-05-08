@@ -87,6 +87,9 @@ async function tickLoop() {
 }
 async function main() {
     await runSeedIfNeeded();
+    if (!config.finnhubApiKey) {
+        console.warn("FINNHUB_API_KEY is not configured. Live Finnhub quotes will be disabled and simulated data will be used instead.");
+    }
     setInterval(tickLoop,3000);
     server.listen(config.port, () => {
         console.log(`API + WS on http://localhost:${config.port}`);

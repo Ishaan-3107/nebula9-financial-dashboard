@@ -25,6 +25,8 @@ const DRIFT = {
 };
 
 const state = { ...BASE };
+const finnhubCache = new Map();
+const CACHE_MS = 15000;
 
 export const WATCHLIST = Object.keys(BASE);
 
@@ -40,19 +42,91 @@ export function getSimulatedPrice(symbol) {
 }
 
 export async function fetchFinnhubQuote(symbol) {
-  if (!config.finnhubApiKey) return null;
-  try {
-    const u = new URL("https://finnhub.io/api/v1/quote");
-    u.searchParams.set("symbol", symbol.toUpperCase());
-    u.searchParams.set("token", config.finnhubApiKey);
-    const r = await fetch(u);
-    if (!r.ok) return null;
-    const j = await r.json();
-    if (typeof j.c === "number" && j.c > 0) return { price: j.c, source: "finnhub" };
-  } catch {
-    /* ignore */
+  const sym = symbol.toUpperCase();
+
+  // cache hit
+  const cached = finnhubCache.get(sym);
+
+  if (
+    cached &&
+    Date.now() - cached.ts < CACHE_MS
+  ) {
+    return cached.data;
   }
-  return null;
+
+  if (!config.finnhubApiKey) {
+    return {
+      price: getSimulatedPrice(sym),
+      source: "simulated",
+    };
+  }
+
+  try {
+    const u = new URL(
+      "https://finnhub.io/api/v1/quote"
+    );
+
+    u.searchParams.set("symbol", sym);
+    u.searchParams.set(
+      "token",
+      config.finnhubApiKey
+    );
+
+    const r = await fetch(u);
+
+    // rate limit fallback
+    if (r.status === 429) {
+      console.warn(
+        `Finnhub rate limit for ${sym}`
+      );
+
+      return {
+        price: getSimulatedPrice(sym),
+        source: "simulated-fallback",
+      };
+    }
+
+    if (!r.ok) {
+      console.warn(
+        `Finnhub request failed for ${sym}: ${r.status}`
+      );
+
+      return {
+        price: getSimulatedPrice(sym),
+        source: "simulated-fallback",
+      };
+    }
+
+    const j = await r.json();
+
+    if (
+      typeof j.c === "number" &&
+      j.c > 0
+    ) {
+      const result = {
+        price: j.c,
+        source: "finnhub",
+      };
+
+      finnhubCache.set(sym, {
+        data: result,
+        ts: Date.now(),
+      });
+
+      return result;
+    }
+  } catch (err) {
+    console.warn(
+      "Finnhub fetch error for",
+      sym,
+      err.message || err
+    );
+  }
+
+  return {
+    price: getSimulatedPrice(sym),
+    source: "simulated-fallback",
+  };
 }
 
 export async function persistTick(symbol, price, volume = 0) {
